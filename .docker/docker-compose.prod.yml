@@ -1,0 +1,15 @@
+services:
+  db:
+      image: mysql:8-debian
+      restart: always
+      volumes:
+          - ../.mysql:/var/lib/mysql
+      expose:
+        - 3308:3306
+      environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: snake-leaderboard
+  api:
+      build:
+        context: ../
+        dockerfile: /Dockerfile

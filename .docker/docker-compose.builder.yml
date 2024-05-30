@@ -1,0 +1,7 @@
+services:
+  app:
+    image: mkluszczynski/snake-leaderboard:latest
+    restart: always
+    build:
+      context: ../
+      dockerfile: /Dockerfile
