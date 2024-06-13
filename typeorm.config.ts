@@ -1,12 +1,11 @@
 import { DataSource } from 'typeorm';
+import { ConfigService } from './lib/config/config.service';
+
+const configService = new ConfigService();
 
 const appDataSource = new DataSource({
   type: 'mysql',
-  host: 'localhost',
-  port: 3308,
-  username: 'root',
-  password: 'root',
-  database: 'snake-leaderboard',
+  ...configService.dbConfig(),
   entities: ['${__dirname}/../**/*.entity{.ts,.js}'],
   migrations: ['${__dirname}/../.migrations/*{.ts,.js}'],
 });
