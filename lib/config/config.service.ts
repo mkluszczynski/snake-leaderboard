@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import 'dotenv/config';
-import { EnvValueNotFoundError } from './errors/envValueNotFound.error';
+import { EnvValueNotFoundError } from './errors/EnvValueNotFound.error';
 
 @Injectable()
 export class ConfigService {

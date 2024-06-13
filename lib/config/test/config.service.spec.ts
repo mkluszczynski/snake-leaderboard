@@ -1,5 +1,5 @@
 import { ConfigService } from '../config.service';
-import { EnvValueNotFoundError } from '../errors/envValueNotFound.error';
+import { EnvValueNotFoundError } from '../errors/EnvValueNotFound.error';
 
 describe('ConfigService', () => {
   let service: ConfigService;
