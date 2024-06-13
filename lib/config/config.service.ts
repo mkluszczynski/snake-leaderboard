@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import 'dotenv/config';
 import { EnvValueNotFoundError } from './errors/EnvValueNotFound.error';
+import { DatabaseConfig } from './types/DatabaseConfig.type';
 
 @Injectable()
 export class ConfigService {
-  public dbConfig() {
+  public dbConfig(): DatabaseConfig {
     return {
       host: this.get('DB_HOST'),
       port: parseInt(this.get('DB_PORT')),
