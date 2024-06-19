@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserData } from './types/userData.type';
-import { tryCatch } from '../../lib/tryCatch';
+import { tryCatch } from '../../utils/tryCatch';
 import { User } from './user.entity';
 import { UserNotFound } from './errors/UserNotFound.error';
 
