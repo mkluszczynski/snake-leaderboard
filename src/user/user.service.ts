@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { UserData } from './types/userData.type';
 import { User } from './user.entity';
 import { UserNotFound } from './errors/UserNotFound.error';
-import { UserAlreadyExists } from './errors/UserAlreadyExists';
+import { UserAlreadyExistsError } from './errors/UserAlreadyExists.error';
 
 @Injectable()
 export class UserService {
@@ -31,7 +31,7 @@ export class UserService {
 
   public async createUser(userData: UserData) {
     if (this.doesUserExist(userData.name)) {
-      throw new UserAlreadyExists();
+      throw new UserAlreadyExistsError();
     }
 
     const newUser = this.userRepository.create();

@@ -14,7 +14,7 @@ import { UserData } from './types/userData.type';
 import { tryCatch } from '../../utils/tryCatch';
 import { User } from './user.entity';
 import { UserNotFound } from './errors/UserNotFound.error';
-import { UserAlreadyExists } from './errors/UserAlreadyExists';
+import { UserAlreadyExistsError } from './errors/UserAlreadyExists.error';
 
 @Controller('user')
 export class UserController {
@@ -37,7 +37,7 @@ export class UserController {
   @Post()
   @HttpCode(201)
   public async createUser(@Body() userData: UserData) {
-    const res = await tryCatch<User, UserNotFound | UserAlreadyExists>(
+    const res = await tryCatch<User, UserNotFound | UserAlreadyExistsError>(
       async () => await this.userService.createUser(userData),
     );
 
