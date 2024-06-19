@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { UserData } from './types/userData.type';
 import { User } from './user.entity';
 import { UserNotFound } from './errors/UserNotFound.error';
+import { UserAlreadyExists } from './errors/UserAlreadyExists';
 
 @Injectable()
 export class UserService {
@@ -12,17 +13,27 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  public async getUsers() {
+    return await this.userRepository.find();
+  }
+
   public async getUserById(id: number) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) throw new UserNotFound();
     return user;
   }
 
-  public async getUsers() {
-    return await this.userRepository.find();
+  public async getUserByName(name: string) {
+    const user = await this.userRepository.findOneBy({ name });
+    if (!user) throw new UserNotFound();
+    return user;
   }
 
   public async createUser(userData: UserData) {
+    if (this.doesUserExist(userData.name)) {
+      throw new UserAlreadyExists();
+    }
+
     const newUser = this.userRepository.create();
 
     newUser.name = userData.name;
@@ -42,5 +53,10 @@ export class UserService {
   public async deleteUser(id: number) {
     const user = await this.getUserById(id);
     return await this.userRepository.remove(user);
+  }
+
+  public async doesUserExist(name: string) {
+    const user = await this.userRepository.findOneBy({ name });
+    return !!user;
   }
 }
