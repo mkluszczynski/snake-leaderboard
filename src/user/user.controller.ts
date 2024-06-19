@@ -1,6 +1,18 @@
-import { Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserData } from './types/userData.type';
+import { tryCatch } from '../../lib/tryCatch';
+import { User } from './user.entity';
 
 @Controller('user')
 export class UserController {
@@ -12,18 +24,42 @@ export class UserController {
   }
 
   @Get('/:id')
-  public getUserById(id: number) {
-    return this.userService.getUserById(id);
+  public async getUserById(@Param('id') id: number) {
+    const res = await tryCatch<UserData, Error>(
+      async () => await this.userService.getUserById(id),
+    );
+    if (res.error) throw new HttpException('User not found', 404);
+    return res.data;
   }
 
   @Post()
   @HttpCode(201)
-  public createUser(userData: UserData) {
-    return this.userService.createUser(userData);
+  public async createUser(@Body() userData: UserData) {
+    const res = await tryCatch<UserData, Error>(
+      async () => await this.userService.createUser(userData),
+    );
+
+    if (res.error) throw new HttpException('Failed to create user', 400);
+    return res.data;
   }
 
   @Put('/:id')
-  public updateUser(id: number, userData: UserData) {
-    return this.userService.updateUser(id, userData);
+  public async updateUser(@Param('id') id: number, @Body() userData: UserData) {
+    const res = await tryCatch(
+      async () => await this.userService.updateUser(id, userData),
+    );
+
+    if (res.error) throw new HttpException('Failed to update user', 400);
+    return res.data;
+  }
+
+  @Delete('/:id')
+  public async deleteUser(@Param('id') id: number) {
+    const res = await tryCatch<User, Error>(
+      async () => await this.userService.getUserById(id),
+    );
+
+    if (res.error) throw new HttpException('User not found', 404);
+    await this.userService.deleteUser(id);
   }
 }
