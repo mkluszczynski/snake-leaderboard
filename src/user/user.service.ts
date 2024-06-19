@@ -11,12 +11,35 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  public createUser(userData: UserData) {
+  public async createUser(userData: UserData) {
     const newUser = this.userRepository.create();
 
     newUser.name = userData.name;
     newUser.password = userData.password;
 
-    this.userRepository.save(newUser);
+    return await this.userRepository.save(newUser);
+  }
+
+  public async getUserById(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new Error('User not found');
+    return user;
+  }
+
+  public async getUsers() {
+    return await this.userRepository.find();
+  }
+
+  public async updateUser(id: number, userData: UserData) {
+    const user = await this.getUserById(id);
+    user.name = userData.name;
+    user.password = userData.password;
+
+    return await this.userRepository.save(user);
+  }
+
+  public async deleteUser(id: number) {
+    const user = await this.getUserById(id);
+    return await this.userRepository.remove(user);
   }
 }
