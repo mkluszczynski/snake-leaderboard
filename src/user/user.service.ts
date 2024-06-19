@@ -5,12 +5,15 @@ import { UserData } from './types/userData.type';
 import { User } from './user.entity';
 import { UserNotFound } from './errors/UserNotFound.error';
 import { UserAlreadyExistsError } from './errors/UserAlreadyExists.error';
+import * as bcrypt from 'bcrypt';
+import { ConfigService } from '../../lib/config/config.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly configService: ConfigService,
   ) {}
 
   public async getUsers() {
@@ -36,8 +39,13 @@ export class UserService {
 
     const newUser = this.userRepository.create();
 
+    const hashedPassword = await bcrypt.hash(
+      userData.password,
+      this.configService.salt(),
+    );
+
     newUser.name = userData.name;
-    newUser.password = userData.password;
+    newUser.password = hashedPassword;
 
     return await this.userRepository.save(newUser);
   }

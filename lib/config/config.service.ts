@@ -15,6 +15,14 @@ export class ConfigService {
     };
   }
 
+  public jwtSecret(): string {
+    return this.get('JWT_SECRET');
+  }
+
+  public salt(): string {
+    return this.get('SALT');
+  }
+
   public get(key: string): string {
     const envValue = process.env[key];
 
