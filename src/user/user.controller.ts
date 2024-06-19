@@ -13,6 +13,7 @@ import { UserService } from './user.service';
 import { UserData } from './types/userData.type';
 import { tryCatch } from '../../lib/tryCatch';
 import { User } from './user.entity';
+import { UserNotFound } from './errors/UserNotFound.error';
 
 @Controller('user')
 export class UserController {
@@ -25,7 +26,7 @@ export class UserController {
 
   @Get('/:id')
   public async getUserById(@Param('id') id: number) {
-    const res = await tryCatch<UserData, Error>(
+    const res = await tryCatch<User, UserNotFound>(
       async () => await this.userService.getUserById(id),
     );
     if (res.error) throw new HttpException('User not found', 404);
@@ -35,7 +36,7 @@ export class UserController {
   @Post()
   @HttpCode(201)
   public async createUser(@Body() userData: UserData) {
-    const res = await tryCatch<UserData, Error>(
+    const res = await tryCatch<User, UserNotFound>(
       async () => await this.userService.createUser(userData),
     );
 
@@ -45,7 +46,7 @@ export class UserController {
 
   @Put('/:id')
   public async updateUser(@Param('id') id: number, @Body() userData: UserData) {
-    const res = await tryCatch(
+    const res = await tryCatch<User, UserNotFound>(
       async () => await this.userService.updateUser(id, userData),
     );
 

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserData } from './types/userData.type';
 import { User } from './user.entity';
+import { UserNotFound } from './errors/UserNotFound.error';
 
 @Injectable()
 export class UserService {
@@ -11,6 +12,16 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  public async getUserById(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new UserNotFound();
+    return user;
+  }
+
+  public async getUsers() {
+    return await this.userRepository.find();
+  }
+
   public async createUser(userData: UserData) {
     const newUser = this.userRepository.create();
 
@@ -18,16 +29,6 @@ export class UserService {
     newUser.password = userData.password;
 
     return await this.userRepository.save(newUser);
-  }
-
-  public async getUserById(id: number) {
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) throw new Error('User not found');
-    return user;
-  }
-
-  public async getUsers() {
-    return await this.userRepository.find();
   }
 
   public async updateUser(id: number, userData: UserData) {
