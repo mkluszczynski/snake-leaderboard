@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '../lib/config/config.service';
+import { UserModule } from './user/user.module';
 
 const configService = new ConfigService();
 
@@ -11,11 +10,12 @@ const configService = new ConfigService();
     TypeOrmModule.forRoot({
       type: 'mysql',
       ...configService.dbConfig(),
-      entities: [],
       synchronize: true,
+      autoLoadEntities: true,
     }),
+    UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
