@@ -33,7 +33,7 @@ export class UserService {
   }
 
   public async createUser(userData: UserData) {
-    if (this.doesUserExist(userData.name)) {
+    if (await this.doesUserExist(userData.name)) {
       throw new UserAlreadyExistsError();
     }
 

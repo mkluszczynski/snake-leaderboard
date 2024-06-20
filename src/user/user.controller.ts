@@ -8,6 +8,8 @@ import {
   Param,
   Post,
   Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserData } from './types/userData.type';
@@ -15,6 +17,7 @@ import { tryCatch } from '../../utils/tryCatch';
 import { User } from './user.entity';
 import { UserNotFound } from './errors/UserNotFound.error';
 import { UserAlreadyExistsError } from './errors/UserAlreadyExists.error';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -46,7 +49,13 @@ export class UserController {
   }
 
   @Put('/:id')
-  public async updateUser(@Param('id') id: number, @Body() userData: UserData) {
+  @UseGuards(AuthGuard)
+  public async updateUser(
+    @Param('id') id: number,
+    @Body() userData: UserData,
+    @Req() req: any,
+  ) {
+    if (req.user.id !== id) throw new HttpException('Unauthorized', 401);
     const res = await tryCatch<User, UserNotFound>(
       async () => await this.userService.updateUser(id, userData),
     );
@@ -56,7 +65,10 @@ export class UserController {
   }
 
   @Delete('/:id')
-  public async deleteUser(@Param('id') id: number) {
+  @UseGuards(AuthGuard)
+  public async deleteUser(@Param('id') id: number, @Req() req: any) {
+    if (req.user.id !== id) throw new HttpException('Unauthorized', 401);
+
     const res = await tryCatch<User, Error>(
       async () => await this.userService.getUserById(id),
     );
