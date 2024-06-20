@@ -23,11 +23,9 @@ jobs:
       - name: Run unit tests
         run: npm run test
         
-      - name: Build and run app
+      - name: Run app
         run: |
-          npm run build
-          npm run start:prod
-          
+          npm run start:dev:docker
       - name: Run e2e tests
         run: npm run test:e2e
         
