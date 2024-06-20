@@ -17,6 +17,8 @@ jobs:
         run: npm i
       - name: Run unit tests
         run: npm run test
+      - name: Copy .env
+        run: cp .env.dev .env
       - name: Build and run app
         run: |
           npm run build
