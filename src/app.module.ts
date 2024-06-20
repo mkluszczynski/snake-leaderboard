@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '../lib/config/config.service';
 import { UserModule } from './user/user.module';
+import { ConfigModule } from '../lib/config/config.module';
 
 const configService = new ConfigService();
 
@@ -14,6 +15,7 @@ const configService = new ConfigService();
       autoLoadEntities: true,
     }),
     UserModule,
+    ConfigModule,
   ],
   controllers: [],
   providers: [],
