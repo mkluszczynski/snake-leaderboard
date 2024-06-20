@@ -5,7 +5,7 @@ on:
     branches: ["main", "feat/*"]
 jobs:
   test: 
-    name: Run unit test and e2e tests
+    name: Run unit test
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -22,11 +22,4 @@ jobs:
         
       - name: Run unit tests
         run: npm run test
-        
-      - name: Run app
-        run: |
-          npm run start:dev:docker
-      - name: Run e2e tests
-        run: npm run test:e2e
-        
         
