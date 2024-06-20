@@ -1,0 +1,21 @@
+on:
+  push:
+    branches: ["main", "feat/*"]
+  pull_request:
+    branches: ["main"]
+jobs:
+  lint:
+    name: Check code with eslint
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use node.js
+        uses: actions/setup-node@v4
+        with:
+          node_version: 20.14
+      - name: Install depentencies and lint code
+        run: |
+          npm i
+          npm run lint
+    
+        
