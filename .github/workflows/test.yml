@@ -1,11 +1,11 @@
 on:
   push:
-    branches: ["main", "feat/*"]
+    branches: ["main"]
   pull_request:
-    branches: ["main", "feat/*"]
+    branches: ["main"]
 jobs:
   test: 
-    name: Run unit test
+    name: Run unit tests
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
