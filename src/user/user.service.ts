@@ -7,6 +7,7 @@ import { UserNotFound } from './errors/UserNotFound.error';
 import { UserAlreadyExistsError } from './errors/UserAlreadyExists.error';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '../../lib/config/config.service';
+import { UserDataDto } from './dto/userData.dto';
 
 @Injectable()
 export class UserService {
@@ -32,8 +33,8 @@ export class UserService {
     return user;
   }
 
-  public async createUser(userData: UserData) {
-    if (await this.doesUserExist(userData.name)) {
+  public async createUser(userData: UserData | UserDataDto) {
+    if (await this.doesUserExist(userData.username)) {
       throw new UserAlreadyExistsError();
     }
 
@@ -44,15 +45,15 @@ export class UserService {
       this.configService.salt(),
     );
 
-    newUser.name = userData.name;
+    newUser.name = userData.username;
     newUser.password = hashedPassword;
 
     return await this.userRepository.save(newUser);
   }
 
-  public async updateUser(id: number, userData: UserData) {
+  public async updateUser(id: number, userData: UserData | UserDataDto) {
     const user = await this.getUserById(id);
-    user.name = userData.name;
+    user.name = userData.username;
     user.password = userData.password;
 
     return await this.userRepository.save(user);

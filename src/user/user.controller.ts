@@ -18,6 +18,8 @@ import { User } from './user.entity';
 import { UserNotFound } from './errors/UserNotFound.error';
 import { UserAlreadyExistsError } from './errors/UserAlreadyExists.error';
 import { AuthGuard } from '../auth/auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { UserDataDto } from './dto/userData.dto';
 
 @Controller('user')
 export class UserController {
@@ -39,7 +41,7 @@ export class UserController {
 
   @Post()
   @HttpCode(201)
-  public async createUser(@Body() userData: UserData) {
+  public async createUser(@Body() userData: UserDataDto) {
     const res = await tryCatch<User, UserNotFound | UserAlreadyExistsError>(
       async () => await this.userService.createUser(userData),
     );
@@ -50,14 +52,15 @@ export class UserController {
 
   @Put('/:id')
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   public async updateUser(
-    @Param('id') id: number,
-    @Body() userData: UserData,
+    @Param('id') id: string,
+    @Body() userData: UserDataDto,
     @Req() req: any,
   ) {
-    if (req.user.id !== id) throw new HttpException('Unauthorized', 401);
+    if (req.user.id !== +id) throw new HttpException('Unauthorized', 401);
     const res = await tryCatch<User, UserNotFound>(
-      async () => await this.userService.updateUser(id, userData),
+      async () => await this.userService.updateUser(+id, userData),
     );
 
     if (res.error) throw new HttpException('Failed to update user', 400);
@@ -66,14 +69,15 @@ export class UserController {
 
   @Delete('/:id')
   @UseGuards(AuthGuard)
-  public async deleteUser(@Param('id') id: number, @Req() req: any) {
-    if (req.user.id !== id) throw new HttpException('Unauthorized', 401);
+  @ApiBearerAuth()
+  public async deleteUser(@Param('id') id: string, @Req() req: any) {
+    if (req.user.id !== +id) throw new HttpException('Unauthorized', 401);
 
     const res = await tryCatch<User, Error>(
-      async () => await this.userService.getUserById(id),
+      async () => await this.userService.getUserById(+id),
     );
 
     if (res.error) throw new HttpException('User not found', 404);
-    await this.userService.deleteUser(id);
+    await this.userService.deleteUser(+id);
   }
 }

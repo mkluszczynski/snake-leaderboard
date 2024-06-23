@@ -10,6 +10,7 @@ async function bootstrap() {
     .setDescription('Api for snake leaderboard')
     .setVersion('1.0')
     .addTag('leaderboard')
+    .addBearerAuth()
     .build();
 
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
