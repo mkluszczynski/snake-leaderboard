@@ -10,6 +10,6 @@ services:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: snake-leaderboard
   api:
-      build:
-        context: ../
-        dockerfile: /Dockerfile
+      image: mkluszczynski/snake-leaderboard
+      restart: always
+      network_mode: host
