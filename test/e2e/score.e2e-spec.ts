@@ -5,7 +5,6 @@ import { AppModule } from '../../src/app.module';
 
 describe('Score Controller (e2e)', () => {
   let app: INestApplication;
-  let testUserId: number = 0;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -15,11 +14,9 @@ describe('Score Controller (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    const resUser = await request(app.getHttpServer())
+    await request(app.getHttpServer())
       .post('/users')
       .send({ username: 'test', password: 'test' });
-
-    testUserId = resUser.body.id;
   });
 
   it('/scores (POST)', async () => {
