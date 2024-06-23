@@ -33,7 +33,7 @@ describe('AppController (e2e)', () => {
       .send({ username: 'test1', password: 'test1' });
     console.log(res.body);
     expect(res.body).toHaveProperty('id');
-    expect(res.body).toHaveProperty('name', 'test1');
+    expect(res.body).toHaveProperty('username', 'test1');
     expect(res.status).toBe(201);
   });
 
@@ -41,14 +41,16 @@ describe('AppController (e2e)', () => {
     const res = await request(app.getHttpServer()).get('/user');
     expect(res.body).toHaveLength(1);
     expect(res.body[0]).toHaveProperty('id', testUserId);
-    expect(res.body[0]).toHaveProperty('name', 'test');
+    expect(res.body[0]).toHaveProperty('username', 'test');
+    expect(res.body[0].password).toBeUndefined();
     expect(res.status).toBe(200);
   });
 
   it('/user/:id (GET)', async () => {
     const res = await request(app.getHttpServer()).get(`/user/${testUserId}`);
     expect(res.body).toHaveProperty('id', testUserId);
-    expect(res.body).toHaveProperty('name', 'test');
+    expect(res.body).toHaveProperty('username', 'test');
+    expect(res.body.password).toBeUndefined();
     expect(res.status).toBe(200);
   });
 
@@ -70,13 +72,15 @@ describe('AppController (e2e)', () => {
       .set('Authorization', `Bearer ${authRes.body.apiKey}`)
       .send({ username: 'test1', password: 'test1' });
     expect(res.body).toHaveProperty('id', testUserId);
-    expect(res.body).toHaveProperty('name', 'test1');
+    expect(res.body).toHaveProperty('username', 'test1');
+    expect(res.body.password).toBeUndefined();
+    expect(res.status).toBe(200);
   });
 
   it('/user/:id (DELETE)', async () => {
     const authRes = await request(app.getHttpServer())
       .post('/auth/login')
-      .send({ name: 'test', password: 'test' });
+      .send({ username: 'test', password: 'test' });
 
     expect(authRes.status).toBe(201);
     expect(authRes.body).toHaveProperty('apiKey');

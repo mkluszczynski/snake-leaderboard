@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserData } from './types/userData.type';
 
 @Entity()
 export class User {
@@ -10,4 +11,11 @@ export class User {
 
   @Column()
   password: string;
+
+  public toUserData(): UserData {
+    return {
+      id: this.id,
+      username: this.name,
+    };
+  }
 }

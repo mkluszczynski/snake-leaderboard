@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserData } from './types/userData.type';
 import { User } from './user.entity';
 import { UserNotFound } from './errors/UserNotFound.error';
 import { UserAlreadyExistsError } from './errors/UserAlreadyExists.error';
@@ -33,7 +32,7 @@ export class UserService {
     return user;
   }
 
-  public async createUser(userData: UserData | UserDataDto) {
+  public async createUser(userData: UserDataDto) {
     if (await this.doesUserExist(userData.username)) {
       throw new UserAlreadyExistsError();
     }
@@ -51,7 +50,7 @@ export class UserService {
     return await this.userRepository.save(newUser);
   }
 
-  public async updateUser(id: number, userData: UserData | UserDataDto) {
+  public async updateUser(id: number, userData: UserDataDto) {
     const user = await this.getUserById(id);
     user.name = userData.username;
     user.password = userData.password;
