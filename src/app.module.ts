@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '../lib/config/config.service';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '../lib/config/config.module';
+import { ScoreModule } from './score/score.module';
 
 const configService = new ConfigService();
 
@@ -16,6 +17,7 @@ const configService = new ConfigService();
     }),
     UserModule,
     ConfigModule,
+    ScoreModule,
   ],
   controllers: [],
   providers: [],

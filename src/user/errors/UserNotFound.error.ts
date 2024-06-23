@@ -1,5 +1,7 @@
-export class UserNotFound extends Error {
+import { HttpException } from '@nestjs/common';
+
+export class UserNotFound extends HttpException {
   constructor() {
-    super('User not found');
+    super('User not found', 404);
   }
 }

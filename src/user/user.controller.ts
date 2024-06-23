@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -12,17 +13,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { tryCatch } from '../../utils/tryCatch';
-import { User } from './user.entity';
-import { UserNotFound } from './errors/UserNotFound.error';
-import { UserAlreadyExistsError } from './errors/UserAlreadyExists.error';
 import { AuthGuard } from '../auth/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UserDataDto } from './dto/userData.dto';
+import { ScoreService } from '../score/score.service';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly scoreService: ScoreService,
+  ) {}
 
   @Get()
   public async getUsers() {
@@ -32,22 +33,15 @@ export class UserController {
 
   @Get('/:id')
   public async getUserById(@Param('id') id: number) {
-    const res = await tryCatch<User, UserNotFound>(
-      async () => await this.userService.getUserById(id),
-    );
-    if (res.error) throw new HttpException('User not found', 404);
-    return res.data.toUserData();
+    const user = await this.userService.getUserById(id);
+    return user.toUserData();
   }
 
   @Post()
   @HttpCode(201)
   public async createUser(@Body() userData: UserDataDto) {
-    const res = await tryCatch<User, UserNotFound | UserAlreadyExistsError>(
-      async () => await this.userService.createUser(userData),
-    );
-
-    if (res.error) throw new HttpException(res.error.message, 400);
-    return res.data.toUserData();
+    const res = await this.userService.createUser(userData);
+    return res.toUserData();
   }
 
   @Put('/:id')
@@ -58,13 +52,11 @@ export class UserController {
     @Body() userData: UserDataDto,
     @Req() req: any,
   ) {
-    if (req.user.id !== +id) throw new HttpException('Unauthorized', 401);
-    const res = await tryCatch<User, UserNotFound>(
-      async () => await this.userService.updateUser(+id, userData),
-    );
+    if (req.user.id !== +id)
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    const user = await this.userService.updateUser(+id, userData);
 
-    if (res.error) throw new HttpException('Failed to update user', 400);
-    return res.data.toUserData();
+    return user.toUserData();
   }
 
   @Delete('/:id')
@@ -73,11 +65,14 @@ export class UserController {
   public async deleteUser(@Param('id') id: string, @Req() req: any) {
     if (req.user.id !== +id) throw new HttpException('Unauthorized', 401);
 
-    const res = await tryCatch<User, Error>(
-      async () => await this.userService.getUserById(+id),
-    );
+    const user = await this.userService.getUserById(+id);
 
-    if (res.error) throw new HttpException('User not found', 404);
-    await this.userService.deleteUser(+id);
+    await this.userService.deleteUser(user.id);
+  }
+
+  @Get('/:id/score')
+  public async getUserScore(@Param('id') id: number) {
+    const user = await this.userService.getUserById(id);
+    return await this.scoreService.getUserScore(user);
   }
 }

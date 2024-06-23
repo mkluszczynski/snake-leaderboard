@@ -4,8 +4,9 @@ import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../../src/user/user.entity';
+import { Score } from '../../src/score/score.entity';
 
-describe('AppController (e2e)', () => {
+describe('User Controller (e2e)', () => {
   let app: INestApplication;
   let testUserId: number = 0;
 
@@ -18,18 +19,20 @@ describe('AppController (e2e)', () => {
     await app.init();
 
     const userRepository = moduleFixture.get(getRepositoryToken(User));
-    await userRepository.clear();
+    const scoreRepository = moduleFixture.get(getRepositoryToken(Score));
+    await scoreRepository.delete({});
+    await userRepository.delete({});
 
     const resUser = await request(app.getHttpServer())
-      .post('/user')
+      .post('/users')
       .send({ username: 'test', password: 'test' });
 
     testUserId = resUser.body.id;
   });
 
-  it('/user (POST)', async () => {
+  it('/users (POST)', async () => {
     const res = await request(app.getHttpServer())
-      .post('/user')
+      .post('/users')
       .send({ username: 'test1', password: 'test1' });
     console.log(res.body);
     expect(res.body).toHaveProperty('id');
@@ -37,8 +40,8 @@ describe('AppController (e2e)', () => {
     expect(res.status).toBe(201);
   });
 
-  it('/user (GET)', async () => {
-    const res = await request(app.getHttpServer()).get('/user');
+  it('/userss (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/users');
     expect(res.body).toHaveLength(1);
     expect(res.body[0]).toHaveProperty('id', testUserId);
     expect(res.body[0]).toHaveProperty('username', 'test');
@@ -46,20 +49,20 @@ describe('AppController (e2e)', () => {
     expect(res.status).toBe(200);
   });
 
-  it('/user/:id (GET)', async () => {
-    const res = await request(app.getHttpServer()).get(`/user/${testUserId}`);
+  it('/users/:id (GET)', async () => {
+    const res = await request(app.getHttpServer()).get(`/users/${testUserId}`);
     expect(res.body).toHaveProperty('id', testUserId);
     expect(res.body).toHaveProperty('username', 'test');
     expect(res.body.password).toBeUndefined();
     expect(res.status).toBe(200);
   });
 
-  it('/user/:id (GET) 404', async () => {
-    const res = await request(app.getHttpServer()).get('/user/:id');
+  it('/users/:id (GET) 404', async () => {
+    const res = await request(app.getHttpServer()).get('/users/:id');
     expect(res.status).toBe(404);
   });
 
-  it('/user/:id (PUT)', async () => {
+  it('/users/:id (PUT)', async () => {
     const authRes = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ username: 'test', password: 'test' });
@@ -68,7 +71,7 @@ describe('AppController (e2e)', () => {
     expect(authRes.status).toBe(201);
 
     const res = await request(app.getHttpServer())
-      .put(`/user/${testUserId}`)
+      .put(`/users/${testUserId}`)
       .set('Authorization', `Bearer ${authRes.body.apiKey}`)
       .send({ username: 'test1', password: 'test1' });
     expect(res.body).toHaveProperty('id', testUserId);
@@ -77,7 +80,7 @@ describe('AppController (e2e)', () => {
     expect(res.status).toBe(200);
   });
 
-  it('/user/:id (DELETE)', async () => {
+  it('/users/:id (DELETE)', async () => {
     const authRes = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ username: 'test', password: 'test' });
@@ -86,7 +89,7 @@ describe('AppController (e2e)', () => {
     expect(authRes.body).toHaveProperty('apiKey');
 
     const res = await request(app.getHttpServer())
-      .delete(`/user/${testUserId}`)
+      .delete(`/users/${testUserId}`)
       .set('Authorization', `Bearer ${authRes.body.apiKey}`)
       .send();
 
