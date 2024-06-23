@@ -25,8 +25,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  public getUsers() {
-    return this.userService.getUsers();
+  public async getUsers() {
+    const users = await this.userService.getUsers();
+    return users.map((user) => user.toUserData());
   }
 
   @Get('/:id')
@@ -35,7 +36,7 @@ export class UserController {
       async () => await this.userService.getUserById(id),
     );
     if (res.error) throw new HttpException('User not found', 404);
-    return res.data;
+    return res.data.toUserData();
   }
 
   @Post()
@@ -46,7 +47,7 @@ export class UserController {
     );
 
     if (res.error) throw new HttpException(res.error.message, 400);
-    return res.data;
+    return res.data.toUserData();
   }
 
   @Put('/:id')
@@ -63,7 +64,7 @@ export class UserController {
     );
 
     if (res.error) throw new HttpException('Failed to update user', 400);
-    return res.data;
+    return res.data.toUserData();
   }
 
   @Delete('/:id')
