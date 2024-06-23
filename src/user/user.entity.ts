@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserData } from './types/userData.type';
+import { Score } from '../score/score.entity';
 
 @Entity()
 export class User {
@@ -11,6 +12,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @OneToOne(() => Score, (score) => score.user, { cascade: true })
+  score: Score;
 
   public toUserData(): UserData {
     return {
