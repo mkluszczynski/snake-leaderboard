@@ -11,7 +11,7 @@ import {
 import { ScoreService } from './score.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { UserService } from '../user/user.service';
-import { CreateScoreDto } from '../dto/createScore.dto';
+import { CreateScoreDto } from './dto/createScore.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Score } from './score.entity';
 
