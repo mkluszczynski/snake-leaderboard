@@ -1,6 +1,5 @@
 import { Body, Controller, HttpException, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserData } from '../user/types/userData.type';
 import { tryCatch } from '../../utils/tryCatch';
 import { InvalidPasswordError } from './errors/InvalidPassword.error';
 import { UserCredentialsDto } from './dto/userCredentials.dto';
