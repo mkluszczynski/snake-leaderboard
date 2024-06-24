@@ -4,19 +4,17 @@
 Backend service for a snake game leaderboard. Built with NestJS. \
 Save your high score and compete with others!
 
+## How to play
+
 ```bash
 npx @mkluszczynski/snake
 ```
 
-## Installation
+API swagger documentation is available at `/api` endpoint.
 
+## Local development setup 
 ```bash
-$ pnpm install
-```
-
-## How to run locally
-
-```bash
+pnpm install
 cp .env.example .env
 pnpm install
 pnpm start:dev:docker
@@ -29,8 +27,34 @@ pnpm migration:generate
 pnpm migration:run
 ```
 
-## How to run with Docker
+## Run with Docker
+
+### Copy repository
+
+#### With HTTPS
+```bash
+git clone https://github.com/mkluszczynski/snake-leaderboard.git
+```
+
+or
+
+#### With SSH
+```bash
+git clone git@github.com:mkluszczynski/snake-leaderboard.git
+```
+
+### Create .env file
+
+Remember to fill with your own values.
 
 ```bash
-docker run --network=host mkluszczynski/snake-leaderboard
+cp .env.example .env
 ```
+
+### Run with Docker Compose
+
+```bash
+pnpm start:prod:docker
+```
+
+It will fetch the latest image from the Docker Hub and run the container.
