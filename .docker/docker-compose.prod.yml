@@ -1,5 +1,8 @@
+name: snake-leaderboard
+
 services:
   api:
-      image: mkluszczynski/snake-leaderboard
-      restart: always
-      network_mode: host
+    image: mkluszczynski/snake-leaderboard
+    env_file: "../.env"
+    network_mode: host
+    restart: always
