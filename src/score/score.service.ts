@@ -3,7 +3,6 @@ import { Repository } from 'typeorm';
 import { Score } from './score.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
-import { UserService } from '../user/user.service';
 import { GetScoreDto } from './dto/getScore.dto';
 
 @Injectable()
@@ -11,7 +10,6 @@ export class ScoreService {
   constructor(
     @InjectRepository(Score)
     private readonly scoreRepository: Repository<Score>,
-    private readonly userService: UserService,
   ) {}
 
   public async getScores(take: number = 10, skip: number = 0) {
