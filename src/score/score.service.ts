@@ -17,6 +17,7 @@ export class ScoreService {
       take,
       skip,
       order: { value: 'desc' },
+      relations: ['user'],
     });
 
     return scores.map((score): GetScoreDto => {
