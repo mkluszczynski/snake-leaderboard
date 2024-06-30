@@ -4,6 +4,7 @@ import { Score } from './score.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
+import { GetScoreDto } from './dto/getScore.dto';
 
 @Injectable()
 export class ScoreService {
@@ -14,10 +15,19 @@ export class ScoreService {
   ) {}
 
   public async getScores(take: number = 10, skip: number = 0) {
-    return await this.scoreRepository.find({
+    const scores = await this.scoreRepository.find({
       take,
       skip,
       order: { value: 'desc' },
+    });
+
+    return scores.map((score): GetScoreDto => {
+      return {
+        id: score.id,
+        value: score.value,
+        date: score.date,
+        user: score.user.toUserData(),
+      };
     });
   }
 
