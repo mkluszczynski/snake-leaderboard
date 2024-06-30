@@ -52,8 +52,14 @@ export class UserService {
 
   public async updateUser(id: number, userData: UserDataDto) {
     const user = await this.getUserById(id);
+
+    const hashedPassword = await bcrypt.hash(
+      userData.password,
+      this.configService.salt(),
+    );
+
     user.name = userData.username;
-    user.password = userData.password;
+    user.password = hashedPassword;
 
     return await this.userRepository.save(user);
   }
